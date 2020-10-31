@@ -2,9 +2,9 @@ use actix_cors::Cors;
 use actix_files as fs;
 use actix_web::client::Client;
 use actix_web::dev::{ServiceRequest, ServiceResponse};
+use actix_web::middleware::Logger;
 use actix_web::web::{BytesMut, Data};
 use actix_web::{web, HttpMessage};
-use actix_web::middleware::Logger;
 use actix_web::{App, HttpResponse, HttpServer};
 
 use futures::stream::StreamExt;
@@ -15,7 +15,7 @@ use url::Url;
 
 struct AppState {
     client: Client,
-    api_url: Url
+    api_url: Url,
 }
 
 async fn reverse_proxy(mut req: ServiceRequest) -> Result<ServiceResponse, actix_web::Error> {
@@ -45,7 +45,8 @@ async fn reverse_proxy(mut req: ServiceRequest) -> Result<ServiceResponse, actix
     } else {
         forwarded_req
     };
-    let forwarded_req = forwarded_req.set_header("User-Agent", "Android com.kuangxiangciweimao.novel");
+    let forwarded_req =
+        forwarded_req.set_header("User-Agent", "Android com.kuangxiangciweimao.novel");
 
     println!("proxy request: {:?}", forwarded_req);
 
@@ -58,7 +59,7 @@ async fn reverse_proxy(mut req: ServiceRequest) -> Result<ServiceResponse, actix
         }
         Err(e) => {
             println!("proxy response: {:?}", e);
-            return Err(actix_web::Error::from(e))
+            return Err(actix_web::Error::from(e));
         }
     };
 
@@ -102,7 +103,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(AppState {
                 client: Client::new(),
-                api_url: Url::parse(target).unwrap()
+                api_url: Url::parse(target).unwrap(),
             })
             .wrap(Logger::default())
             .wrap(
