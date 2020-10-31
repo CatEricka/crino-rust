@@ -47,11 +47,20 @@ async fn reverse_proxy(mut req: ServiceRequest) -> Result<ServiceResponse, actix
     };
     let forwarded_req = forwarded_req.set_header("User-Agent", "Android com.kuangxiangciweimao.novel");
 
-    println!("{:?}", forwarded_req);
+    println!("proxy request: {:?}", forwarded_req);
 
-    let mut res = forwarded_req.send().await.map_err(actix_web::Error::from)?;
-    
-    println!("{:?}", res);
+    // let mut res = forwarded_req.send().await?;
+    // 完全等价下面的 match
+    let mut res = match forwarded_req.send().await {
+        Ok(r) => {
+            println!("proxy request error: {:?}", r);
+            r
+        }
+        Err(e) => {
+            println!("proxy response: {:?}", e);
+            return Err(actix_web::Error::from(e))
+        }
+    };
 
     let mut client_resp = HttpResponse::build(res.status());
     // Remove `Connection` as per
