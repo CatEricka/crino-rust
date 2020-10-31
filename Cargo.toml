@@ -1,0 +1,23 @@
+[package]
+name = "cirno-rust"
+version = "0.1.0"
+authors = ["CatEricka <32029431+CatEricka@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = { version = "3", features = ["rustls"] }
+actix-service = "1"
+actix-files = "0.4.0"
+actix-cors = "0.5.0"
+
+url = "2.0"
+
+futures = "0.3.1"
+pin-project = "0.4"
+
+rustls = "0.18"
+
+flate2 = "1.0"
+env_logger = "0.8"
